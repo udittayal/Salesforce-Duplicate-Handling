@@ -23,3 +23,29 @@ Apex Trigger :
             }
         }
     }}
+```
+
+Python Script :
+
+```
+from concurrent.futures import ThreadPoolExecutor,as_completed
+import requests
+
+def callSFAPI():
+
+    custom_headers = {'Authorization' : 'Bearer XXXXXXXXXXXX'}
+    url = 'https://resourceful-bear-e88akt-dev-ed.trailblaze.my.salesforce.com/services/data/v58.0/sobjects/Lead/'
+    payload = {"lastname" : "test", "mobilephone" : "8745818715", "company" : "self"}
+    response = requests.post(url, headers=custom_headers, json=payload)
+    return response.text
+
+
+
+
+with ThreadPoolExecutor(max_workers=10) as executor:
+    futures = [executor.submit(callSFAPI) for i in range(5)]     //5 API Calls within almost same time frame
+    for future in as_completed(futures):
+        print(future.result())
+```
+
+
